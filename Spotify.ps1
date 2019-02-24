@@ -59,7 +59,6 @@ function Get_Full_List_of_Spotify_PlayList_Tracks([string]$playListId,[string]$t
     }
 }
 
-
 function DumpAppTracks(){
     $Spotify_PlayList_List = @()
     $Spotify_PlayList_List =  Get_Full_List_of_Spotify_PlayLists $Spotify_PlayList_List $user $token
@@ -85,6 +84,4 @@ function DumpAppTracks(){
         Write-Host "End:" (Get-Date).ToString()
     }    
 }
-
-
 DumpAppTracks
