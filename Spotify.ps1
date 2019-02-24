@@ -63,7 +63,6 @@ function DumpAppTracks(){
     $Spotify_PlayList_List = @()
     $Spotify_PlayList_List =  Get_Full_List_of_Spotify_PlayLists $Spotify_PlayList_List $user $token
     $PlayListCount = 0
-    $masterTrackList = @()
     $trackCount = 0
     "`"TrackNumber`",`"PlayListTrackNumber`",`"TrackName`",`"ArtistName`",`"PlayListName`",`"PlayListID`",`"TrackExternalURL`",`"TrackSpotifyAPI`"" | Out-File -Encoding Ascii .\$fileName
     
