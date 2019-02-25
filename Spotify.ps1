@@ -64,7 +64,7 @@ function DumpAppTracks(){
     $Spotify_PlayList_List =  Get_Full_List_of_Spotify_PlayLists $Spotify_PlayList_List $user $token
     $PlayListCount = 0
     $trackCount = 0
-    "`"TrackNumber`",`"PlayListTrackNumber`",`"TrackName`",`"ArtistName`",`"PlayListName`",`"PlayListID`",`"TrackExternalURL`",`"TrackSpotifyAPI`"" | Out-File -Encoding Ascii .\$fileName
+    "`"TrackNumber`",`"PlayListTrackNumber`",`"TrackName`",`"ArtistName`",`"PlayListName`",`"PlayListID`",`"TrackExternalURL`",`"TrackSpotifyAPI`",`"TrackAddedAt`"" | Out-File -Encoding Ascii .\$fileName
     
     foreach ($PlayList in $Spotify_PlayList_List){
         Write-Host "Begin:" (Get-Date).ToString() -ForegroundColor Green
@@ -78,7 +78,7 @@ function DumpAppTracks(){
             $trackCount += 1
             $playListTrackCount += 1
             #Write-Host $trackCount ":" $track.track.name ":" $track.track.artists.name
-            "`"" + $trackCount.ToString() + "`",`"" + $playListTrackCount.ToString() + "`",`"" + $track.track.name + "`",`"" + $track.track.artists.name + "`",`"" + $PlayList.name + "`",`"" + $PlayList.id + "`",`"" + $track.track.external_urls.spotify + "`",`"" + $track.track.href + "`""| Out-File -append .\$fileName
+            "`"" + $trackCount.ToString() + "`",`"" + $playListTrackCount.ToString() + "`",`"" + $track.track.name + "`",`"" + $track.track.artists.name + "`",`"" + $PlayList.name + "`",`"" + $PlayList.id + "`",`"" + $track.track.external_urls.spotify + "`",`"" + $track.track.href + "`",`"" + $track.added_at  + "`""| Out-File -append .\$fileName
         }
         Write-Host "End:" (Get-Date).ToString()
     }    
