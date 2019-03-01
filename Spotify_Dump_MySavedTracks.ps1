@@ -16,9 +16,9 @@ function Dump_MySpotifyTracks([string]$token,[int]$trackCount=0,[int]$trackNumbe
         exit
     }
     $trackCount = $results.total
-    foreach ($Track in $results.items.track){
+    foreach ($Track in $results.items){
         $trackNumber += 1
-        "`"" + $trackNumber.ToString() + "`",`"" + $track.name + "`",`"" + $track.artists.name + "`",`"" + $track.external_urls.spotify + "`",`"" + $track.href + "`""| Out-File -append .\$fileName
+        "`"" + $trackNumber.ToString() + "`",`"" + $Track.track.name + "`",`"" + $Track.track.name + "`",`"" + $Track.track.external_urls.spotify + "`",`"" + $Track.track.href  + "`",`"" + $Track.added_at + "`""| Out-File -append .\$fileName
     }
 
     if (($offset + $limit) -lt $trackCount){
@@ -29,6 +29,6 @@ function Dump_MySpotifyTracks([string]$token,[int]$trackCount=0,[int]$trackNumbe
         Dump_MySpotifyTracks $token $trackCount $trackNumber $offset $limit
     }
 }
-"`"TrackNumber`",`"TrackName`",`"ArtistName`",`"TrackExternalURL`",`"TrackSpotifyAPI`"" | Out-File -Encoding Ascii .\$fileName
+"`"TrackNumber`",`"TrackName`",`"ArtistName`",`"TrackExternalURL`",`"TrackSpotifyAPI`",`"AddedDate`"" | Out-File -Encoding Ascii .\$fileName
 
 Dump_MySpotifyTracks $token
