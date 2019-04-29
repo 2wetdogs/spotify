@@ -59,6 +59,8 @@
     <Folder Include="Properties" />
     <Folder Include="Tables" />
     <Folder Include="StoredProcedures" />
+    <Folder Include="bin\Release" />
+    <Folder Include="bin" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Playlists.sql" />
@@ -67,5 +69,8 @@
   <ItemGroup>
     <None Include="Create-LocalHost-SQLEXPRESS-Spotify-Database.publish.xml" />
     <None Include="Update-LocalHost-SQLEXPRESS-Spotify-Database.publish.xml" />
+    <None Include="bin\Release\Database.dacpac" />
+    <None Include="bin\Release\Database.dll" />
+    <None Include="bin\Release\Database.pdb" />
   </ItemGroup>
 </Project>
