@@ -73,4 +73,7 @@
     <None Include="bin\Release\Database.dll" />
     <None Include="bin\Release\Database.pdb" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Database.refactorlog" />
+  </ItemGroup>
 </Project>

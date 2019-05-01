@@ -1,3 +1,4 @@
+
 #user: Spotify UserName
 #token: Spotify authentication token
 #filename: The name of the file you want to dump the playlists to.
@@ -83,7 +84,7 @@ function DumpAppTracks(){
     $Spotify_PlayList_List =  Get_Full_List_of_Spotify_PlayLists $Spotify_PlayList_List $user $token
     $PlayListCount = 0
     $trackCount = 0
-    "`"TrackNumber`",`"PlayListTrackNumber`",`"TrackName`",`"ArtistName`",`"PlayListName`",`"PlayListID`",`"TrackExternalURL`",`"TrackSpotifyAPI`",`"TrackAddedAt`"" | Out-File -Encoding Ascii .\$fileName
+    "`"TrackNumber`",`"PlayListTrackNumber`",`"TrackName`",`"ArtistName`",`"PlayListName`",`"PlayListID`",`"AddedBy`",`"AddedBy_DisplayName`",`"TrackExternalURL`",`"TrackSpotifyAPI`",`"TrackAddedAt`"" | Out-File -Encoding Ascii .\$fileName
 
 
 
@@ -106,6 +107,8 @@ function DumpAppTracks(){
 	$SqlCommand.Parameters.AddwithValue("@ArtistName",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@PlayListName",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@PlayListID",'') | Out-Null
+    $SqlCommand.Parameters.AddwithValue("@AddedBy",'') | Out-Null
+    $SqlCommand.Parameters.AddwithValue("@AddedBy_DisplayName",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@TrackExternalURL",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@TrackSpotifyAPI",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@TrackAddedDate",'') | Out-Null
@@ -145,7 +148,11 @@ function DumpAppTracks(){
 				$SqlCommand.Parameters["@PlaylistTrackNumber"].Value = $playListTrackCount
 			}
 			$SqlCommand.Parameters["@PlayListName"].Value = $PlayList.name.ToString()
+			$SqlCommand.Parameters["@PlayList_Number"].Value = 1
+			
 			$SqlCommand.Parameters["@PlayListID"].Value = $PlayList.id
+            $SqlCommand.Parameters["@AddedBy"].Value = $track.added_by.id
+            $SqlCommand.Parameters["@AddedBy_DisplayName"].Value = "FF"
 			if($track.track.external_urls.spotify -ne $null){
 				$SqlCommand.Parameters["@TrackExternalURL"].Value = $track.track.external_urls.spotify.ToString()
 			}
@@ -160,6 +167,11 @@ function DumpAppTracks(){
 			}
 			$SqlCommand.Parameters["@TrackAddedDate"].Value = $track.added_at
 			
+			$SqlCommand.Parameters["@RUN_ID"].Value = 1
+			$SqlCommand.Parameters["@Added_To_Table_Date_Time"].Value = Get-Date
+	
+			
+
 			#If send to database is true then write to database.
 			if($SendToDatabase-eq $true){
 				$Computer_Result = $SqlCommand.ExecuteNonQuery();
