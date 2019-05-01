@@ -27,7 +27,6 @@
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
-    <Compile Include="PowerShell.ps1" />
     <Compile Include="Spotify_Dump_AllPlayLists.ps1" />
     <Compile Include="Spotify_Dump_MySavedTracks.ps1" />
   </ItemGroup>
