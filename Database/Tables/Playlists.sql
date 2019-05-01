@@ -10,7 +10,6 @@
 	[TrackExternalURL] [VARCHAR](MAX) NULL,
 	[TrackSpotifyAPI] [VARCHAR](MAX) NULL,
 	[TrackAddedDate] [VARCHAR](MAX) NULL,
-	[AddedBy] [VARCHAR](MAX) NULL,
-	[AddedBy_DisplayName] [VARCHAR](MAX) NULL,
-	[RUN_ID] INT NULL,
+	[AddedBy_ID] [VARCHAR](MAX) NULL,
+	[RUN_ID] [VARCHAR](150) NULL,
 	[Added_To_Table_Date_Time] [VARCHAR](MAX) NULL)

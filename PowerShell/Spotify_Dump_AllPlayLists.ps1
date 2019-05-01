@@ -14,7 +14,7 @@ param(
 )
 
 #Create an unique id based on time for each instance of the script
-$RunID = (get-date).ToUniversalTime().ToString("yyyyMMddHHmmss")
+$Run_ID = (get-date).ToUniversalTime().ToString("yyyyMMddHHmmss")
 
 #Recursive Function - Get List of play lists 50 at a time by default. (This is a spotify max limit at this time too), Recursion is used to loop trough x number of playlists if x is greater than 50 remaining. 
 function Get_Full_List_of_Spotify_PlayLists([array]$Spotify_Playlists,[string]$user,[string]$token,[int]$playListCount=0,[int]$offset = 0,[int]$limit = 50){
@@ -84,7 +84,7 @@ function DumpAppTracks(){
     $Spotify_PlayList_List =  Get_Full_List_of_Spotify_PlayLists $Spotify_PlayList_List $user $token
     $PlayListCount = 0
     $trackCount = 0
-    "`"TrackNumber`",`"PlayListTrackNumber`",`"TrackName`",`"ArtistName`",`"PlayListName`",`"PlayListID`",`"AddedBy`",`"AddedBy_DisplayName`",`"TrackExternalURL`",`"TrackSpotifyAPI`",`"TrackAddedAt`"" | Out-File -Encoding Ascii .\$fileName
+    "`"TrackNumber`",`"PlayListTrackNumber`",`"TrackName`",`"ArtistName`",`"PlayListName`",`"PlayListID`",`"AddedBy_ID`",`"TrackExternalURL`",`"TrackSpotifyAPI`",`"TrackAddedAt`"" | Out-File -Encoding Ascii .\$fileName
 
 
 
@@ -101,29 +101,32 @@ function DumpAppTracks(){
 	$SqlCommand.CommandText = "[dbo].[Add_Playlist]"
 	$SqlCommand.Parameters.Add("@Playlist_ID", 1) | Out-Null
 	$SqlCommand.Parameters["@Playlist_ID"].Direction = [system.Data.ParameterDirection]::Output
+	$SqlCommand.Parameters.AddwithValue("@PlayList_Number",1) | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@TrackNumber",1) | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@PlaylistTrackNumber",1) | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@TrackName",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@ArtistName",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@PlayListName",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@PlayListID",'') | Out-Null
-    $SqlCommand.Parameters.AddwithValue("@AddedBy",'') | Out-Null
-    $SqlCommand.Parameters.AddwithValue("@AddedBy_DisplayName",'') | Out-Null
+    $SqlCommand.Parameters.AddwithValue("@AddedBy_ID",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@TrackExternalURL",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@TrackSpotifyAPI",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@TrackAddedDate",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@RUN_ID",1) | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@Added_To_Table_Date_Time",'') | Out-Null
 
-    
+    $PlayListCount = 0
+
 	#Loop through the playlists and add them the file or database.
     foreach ($PlayList in $Spotify_PlayList_List){
         Write-Host "Begin:" (Get-Date).ToString() -ForegroundColor Green
         $PlayListCount += 1
         Write-Host $PlayListCount ":" $PlayList.name ":" $PlayList.id
-        #$playListId = "6jo1v0EeQc4flcNW7DZ4ad"
+    	$SqlCommand.Parameters["@Playlist_Number"].Value = $PlayListCount
         $trackList = @()
         $trackList =  Get_Full_List_of_Spotify_PlayList_Tracks $PlayList.id $token
         $playListTrackCount = 0
-
+	
 		#Looping through tracks in playlists.
         foreach ($track in $trackList){
             $trackCount += 1
@@ -147,13 +150,11 @@ function DumpAppTracks(){
 				$SqlCommand.Parameters["@ArtistName"].Value = $Artists
 				$SqlCommand.Parameters["@PlaylistTrackNumber"].Value = $playListTrackCount
 			}
-			$SqlCommand.Parameters["@PlayListName"].Value = $PlayList.name.ToString()
-			$SqlCommand.Parameters["@PlayList_Number"].Value = 1
+			$SqlCommand.Parameters["@PlayListName"].Value = $PlayList.name
 			
 			$SqlCommand.Parameters["@PlayListID"].Value = $PlayList.id
-            $SqlCommand.Parameters["@AddedBy"].Value = $track.added_by.id
-            $SqlCommand.Parameters["@AddedBy_DisplayName"].Value = "FF"
-			if($track.track.external_urls.spotify -ne $null){
+            $SqlCommand.Parameters["@AddedBy_ID"].Value = $track.added_by.id
+       	if($track.track.external_urls.spotify -ne $null){
 				$SqlCommand.Parameters["@TrackExternalURL"].Value = $track.track.external_urls.spotify.ToString()
 			}
 			else{
@@ -167,8 +168,8 @@ function DumpAppTracks(){
 			}
 			$SqlCommand.Parameters["@TrackAddedDate"].Value = $track.added_at
 			
-			$SqlCommand.Parameters["@RUN_ID"].Value = 1
-			$SqlCommand.Parameters["@Added_To_Table_Date_Time"].Value = Get-Date
+			$SqlCommand.Parameters["@RUN_ID"].Value = $Run_ID.ToString()
+			$SqlCommand.Parameters["@Added_To_Table_Date_Time"].Value = (get-date).ToUniversalTime().ToString("MM/dd/yyyy dd:HH:mm:ss")
 	
 			
 
@@ -185,3 +186,25 @@ function DumpAppTracks(){
     }    
 }
 DumpAppTracks
+
+#$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
+#$SqlConnection.ConnectionString = $DatabaseConnectionString
+#write-host "Opening SQL Connection..."
+#$SqlConnection.Open()
+#write-host "SQL Connection Open"
+
+##Creating SQL Connections
+#$SqlCommand_Get_Users_List = New-Object System.Data.SqlClient.SqlCommand
+#$SqlCommand_Get_Users_List.CommandType = [System.Data.CommandType]'StoredProcedure'
+#$SqlCommand_Get_Users_List.Connection = $SqlConnection
+#$SqlCommand_Get_Users_List.CommandText = "[dbo].[Get_Users_List]"
+#$SqlCommand_Get_Users_List.Parameters.Add("@AddedBy_ID", 1) | Out-Null
+#$SqlCommand_Get_Users_List.Parameters["@AddedBy_ID"].Direction = [system.Data.ParameterDirection]::Output
+
+	
+#$Computer_Result = $SqlCommand.ExecuteNonQuery();
+#$Users_IDs = $SqlCommand_Get_Users_List.Parameters["@AddedBy_ID"].Value;
+			
+#Write-Host $Computer_Result
+
+#Write-Host $Users_IDs 

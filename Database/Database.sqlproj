@@ -61,10 +61,13 @@
     <Folder Include="StoredProcedures" />
     <Folder Include="bin\Release" />
     <Folder Include="bin" />
+    <Folder Include="Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Playlists.sql" />
     <Build Include="StoredProcedures\Add_Playlist.sql" />
+    <Build Include="StoredProcedures\Get_Users_List.sql" />
+    <Build Include="Views\Playlists_Current.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Create-LocalHost-SQLEXPRESS-Spotify-Database.publish.xml" />

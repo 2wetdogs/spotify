@@ -1,0 +1,7 @@
+﻿CREATE PROCEDURE [dbo].[Get_Users_List]
+	@AddedBy_ID VARCHAR(150) OUTPUT
+AS
+SET NOCOUNT ON;
+
+SELECT DISTINCT (AddedBy_ID) FROM dbo.Playlists
+GO
