@@ -1,5 +1,4 @@
 ﻿CREATE PROCEDURE [dbo].[Get_Users_List]
-	@AddedBy_ID VARCHAR(150) OUTPUT
 AS
 SET NOCOUNT ON;
 

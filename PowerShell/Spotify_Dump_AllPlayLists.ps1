@@ -185,26 +185,66 @@ function DumpAppTracks(){
         Write-Host "End:" (Get-Date).ToString()
     }    
 }
-DumpAppTracks
 
-#$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
-#$SqlConnection.ConnectionString = $DatabaseConnectionString
-#write-host "Opening SQL Connection..."
-#$SqlConnection.Open()
-#write-host "SQL Connection Open"
 
-##Creating SQL Connections
-#$SqlCommand_Get_Users_List = New-Object System.Data.SqlClient.SqlCommand
-#$SqlCommand_Get_Users_List.CommandType = [System.Data.CommandType]'StoredProcedure'
-#$SqlCommand_Get_Users_List.Connection = $SqlConnection
-#$SqlCommand_Get_Users_List.CommandText = "[dbo].[Get_Users_List]"
-#$SqlCommand_Get_Users_List.Parameters.Add("@AddedBy_ID", 1) | Out-Null
-#$SqlCommand_Get_Users_List.Parameters["@AddedBy_ID"].Direction = [system.Data.ParameterDirection]::Output
+function Get_Spotify_User_Profile([string]$user,[string]$token,[string]$userid){
+    
+	#Spotify URI for get playlists.
+	$url = " https://api.spotify.com/v1/users/$userid"
+    #Creating header for call.
+	$headers = @{"Authorization" = "Bearer " + $token}
 
-	
-#$Computer_Result = $SqlCommand.ExecuteNonQuery();
-#$Users_IDs = $SqlCommand_Get_Users_List.Parameters["@AddedBy_ID"].Value;
+    Try{
+        $results = Invoke-RestMethod -Uri $url -Headers $headers
+		return $results
+    }
+    Catch{
+        write-host $_
+        #Token is incorrect or expired.  This opens a chrome browser to the URL where you can get a token.
+		Start-Process chrome.exe https://developer.spotify.com/console/get-playlists/
+        exit
+    }
+}
+
+
+function Get_Spotify_Users{
+	$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
+	$SqlConnection.ConnectionString = "Server=localhost\SQLEXPRESS;Database=Spotify;Integrated Security=True"
+	$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
+	$SqlCmd.CommandText = "Get_Users_List"
+	$SqlCmd.Connection = $SqlConnection
+	$SqlAdapter = New-Object System.Data.SqlClient.SqlDataAdapter
+	$SqlAdapter.SelectCommand = $SqlCmd
+	$DataSet = New-Object System.Data.DataSet
+	$SqlAdapter.Fill($DataSet)
+	$SqlConnection.Close()
+
+	$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
+	$SqlConnection.ConnectionString = $DatabaseConnectionString
+	write-host "Opening SQL Connection..."
+	$SqlConnection.Open()
+	write-host "SQL Connection Open"
+
+	#Creating SQL Connections
+	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+	$SqlCommand.Connection = $SqlConnection
+	$SqlCommand.CommandText = "[dbo].[Add_Spotify_User]"
+	$SqlCommand.Parameters.AddwithValue("@Spotify_User_ID",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@DisplayName",'') | Out-Null
 			
-#Write-Host $Computer_Result
+	foreach ($Row in  $DataSet.Tables[0].AddedBy_ID){
+		if($Row -ne ""){
+			$User = Get_Spotify_User_Profile $user $token $Row
+			$SqlCommand.Parameters["@Spotify_User_ID"].Value = $User.id
+			$SqlCommand.Parameters["@DisplayName"].Value = $User.display_name
+			$Computer_Result = $SqlCommand.ExecuteNonQuery();
+		}	
+	}
+}
 
-#Write-Host $Users_IDs 
+DumpAppTracks
+Get_Spotify_Users
+
+
+
