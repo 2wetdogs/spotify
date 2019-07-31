@@ -4,6 +4,7 @@
 	[TrackNumber] [int] NOT NULL,
 	[PlaylistTrackNumber] [INT] NOT NULL,
 	[TrackName] [VARCHAR](MAX) NULL,
+	[track_id] [VARCHAR](MAX) NULL,
 	[ArtistName] [VARCHAR](MAX) NULL,
 	[PlayListName] [VARCHAR](MAX) NULL,
 	[PlayListID] [VARCHAR](MAX) NULL,

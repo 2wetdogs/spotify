@@ -1,9 +1,10 @@
 ﻿CREATE PROCEDURE [dbo].[Add_Playlist]
 	@Playlist_ID INT OUTPUT,
-	@Playlist_Number INT,
+	@PlayList_Number INT,
 	@TrackNumber INT,
 	@PlaylistTrackNumber INT,
 	@TrackName VARCHAR(MAX),
+	@track_id VARCHAR(MAX),	
 	@ArtistName VARCHAR(MAX),
 	@PlayListName VARCHAR(MAX),
 	@PlayListID VARCHAR(MAX), 
@@ -17,10 +18,11 @@ AS
 SET NOCOUNT ON;
 
 INSERT INTO [dbo].[Playlists]
-    ([Playlist_Number],
+    ([PlayList_Number],
 	[TrackNumber], 
 	[PlaylistTrackNumber],
-    [TrackName], 
+    [TrackName],
+	[track_id],
     [ArtistName], 
     [PlayListName],
 	[PlayListID], 
@@ -31,10 +33,11 @@ INSERT INTO [dbo].[Playlists]
 	[RUN_ID],
 	[Added_To_Table_Date_Time])
 VALUES
-	(@Playlist_Number,
+	(@PlayList_Number,
 	@TrackNumber,
 	@PlaylistTrackNumber,
 	@TrackName,
+	@track_id,
 	@ArtistName,
 	@PlayListName, 
 	@PlayListID, 

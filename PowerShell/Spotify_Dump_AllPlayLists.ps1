@@ -28,7 +28,7 @@ function Get_Full_List_of_Spotify_PlayLists([array]$Spotify_Playlists,[string]$u
         $results = Invoke-RestMethod -Uri $url -Headers $headers
     }
     Catch{
-        write-host $_
+        write-host "Cought Error:" $_
         #Token is incorrect or expired.  This opens a chrome browser to the URL where you can get a token.
 		Start-Process chrome.exe https://developer.spotify.com/console/get-playlists/
         exit
@@ -84,15 +84,17 @@ function DumpAppTracks(){
     $Spotify_PlayList_List =  Get_Full_List_of_Spotify_PlayLists $Spotify_PlayList_List $user $token
     $PlayListCount = 0
     $trackCount = 0
-    "`"TrackNumber`",`"PlayListTrackNumber`",`"TrackName`",`"ArtistName`",`"PlayListName`",`"PlayListID`",`"AddedBy_ID`",`"TrackExternalURL`",`"TrackSpotifyAPI`",`"TrackAddedAt`"" | Out-File -Encoding Ascii .\$fileName
+    "`"TrackNumber`",`"PlayListTrackNumber`",`"TrackName`",`"Track_id`",`"ArtistName`",`"PlayListName`",`"PlayListID`",`"AddedBy_ID`",`"TrackExternalURL`",`"TrackSpotifyAPI`",`"TrackAddedAt`"" | Out-File -Encoding Ascii .\$fileName
 
 
 
 	$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
 	$SqlConnection.ConnectionString = $DatabaseConnectionString
-	write-host "Opening SQL Connection..."
-	$SqlConnection.Open()
-	write-host "SQL Connection Open"
+	if($SendToDatabase-eq $true){
+		write-host "Opening SQL Connection..."
+		$SqlConnection.Open()
+		write-host "SQL Connection Open"
+	}
 
 	#Creating SQL Connections
 	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
@@ -105,6 +107,7 @@ function DumpAppTracks(){
 	$SqlCommand.Parameters.AddwithValue("@TrackNumber",1) | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@PlaylistTrackNumber",1) | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@TrackName",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@Track_id",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@ArtistName",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@PlayListName",'') | Out-Null
 	$SqlCommand.Parameters.AddwithValue("@PlayListID",'') | Out-Null
@@ -134,6 +137,9 @@ function DumpAppTracks(){
 			$SqlCommand.Parameters["@TrackNumber"].Value = $trackCount
 			$SqlCommand.Parameters["@PlaylistTrackNumber"].Value = $playListTrackCount
 			$SqlCommand.Parameters["@TrackName"].Value = $track.track.name
+			if($track.track.id -ne $null){
+				$SqlCommand.Parameters["@Track_id"].Value = $track.track.id
+			}
 			if($track.track.artists.count -eq 1){
 				$SqlCommand.Parameters["@ArtistName"].Value = $track.track.artists.name.ToString()
 			}
@@ -177,20 +183,17 @@ function DumpAppTracks(){
 			if($SendToDatabase-eq $true){
 				$Computer_Result = $SqlCommand.ExecuteNonQuery();
 				$Playlist_ID = $SqlCommand.Parameters["@Playlist_ID"].Value;
-				write-host "Added Playlist:" $track.track.name "with a track ID of:" $Playlist_ID  ":" $playListTrackCount.ToString()
 			}
-            #Write-Host $trackCount ":" $track.track.name ":" $track.track.artists.name
+			write-host "Added Track to Playlist" $PlayList.name":" $track.track.name "with a track ID of:" $Playlist_ID  ":" $playListTrackCount.ToString()
             "`"" + $trackCount.ToString() + "`",`"" + $playListTrackCount.ToString() + "`",`"" + $track.track.name + "`",`"" + $track.track.artists.name + "`",`"" + $PlayList.name + "`",`"" + $PlayList.id + "`",`"" + $track.track.external_urls.spotify + "`",`"" + $track.track.href + "`",`"" + $track.added_at  + "`""| Out-File -append .\$fileName
         }
         Write-Host "End:" (Get-Date).ToString()
     }    
 }
 
-
 function Get_Spotify_User_Profile([string]$user,[string]$token,[string]$userid){
-    
 	#Spotify URI for get playlists.
-	$url = " https://api.spotify.com/v1/users/$userid"
+	$url = "https://api.spotify.com/v1/users/$userid"
     #Creating header for call.
 	$headers = @{"Authorization" = "Bearer " + $token}
 
@@ -199,19 +202,138 @@ function Get_Spotify_User_Profile([string]$user,[string]$token,[string]$userid){
 		return $results
     }
     Catch{
-        write-host $_
+        write-host "Cought Error:" $_
         #Token is incorrect or expired.  This opens a chrome browser to the URL where you can get a token.
 		Start-Process chrome.exe https://developer.spotify.com/console/get-playlists/
         exit
     }
 }
 
-
 function Get_Spotify_Users{
 	$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
 	$SqlConnection.ConnectionString = "Server=localhost\SQLEXPRESS;Database=Spotify;Integrated Security=True"
 	$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
 	$SqlCmd.CommandText = "Get_Users_List"
+	$SqlCmd.Connection = $SqlConnection
+	$SqlAdapter = New-Object System.Data.SqlClient.SqlDataAdapter
+	$SqlAdapter.SelectCommand = $SqlCmd
+	$DataSet = New-Object System.Data.DataSet
+	$SqlAdapter.Fill($DataSet)
+	$SqlConnection.Close()
+
+	$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
+	$SqlConnection.ConnectionString = $DatabaseConnectionString
+
+	if($SendToDatabase-eq $true){
+		write-host "Opening SQL Connection..."
+		$SqlConnection.Open()
+		write-host "SQL Connection Open"
+	}
+
+	#Creating SQL Connections
+	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+	$SqlCommand.Connection = $SqlConnection
+	$SqlCommand.CommandText = "[dbo].[Add_Spotify_User]"
+	$SqlCommand.Parameters.AddwithValue("@Spotify_User_ID",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@DisplayName",'') | Out-Null
+			
+	foreach ($Row in  $DataSet.Tables[0].AddedBy_ID){
+		if($Row -ne ""){
+			$User = Get_Spotify_User_Profile $user $token $Row
+			$SqlCommand.Parameters["@Spotify_User_ID"].Value = $User.id
+			$SqlCommand.Parameters["@DisplayName"].Value = $User.display_name
+			if($SendToDatabase-eq $true){
+				$Computer_Result = $SqlCommand.ExecuteNonQuery();
+			}
+		}	
+	}
+}
+
+function Get_Spotify_Audio_Features([string]$user,[string]$token,[string]$track_ids){
+	#Spotify URI for get playlists.
+	$url = "https://api.spotify.com/v1/audio-features?ids=$track_ids"
+    #Creating header for call.
+	$headers = @{"Authorization" = "Bearer " + $token}
+
+    Try{
+        $results = Invoke-RestMethod -Uri $url -Headers $headers
+		return $results
+    }
+    Catch{
+        write-host "Cought Error:" $_
+        #Token is incorrect or expired.  This opens a chrome browser to the URL where you can get a token.
+		Start-Process chrome.exe https://developer.spotify.com/console/get-playlists/
+        exit
+    }
+}
+
+function Get_Next_X_From_Dataset {
+	Param(
+		[System.Data.DataSet]$DataSet,
+		[System.Data.SqlClient.SqlCommand]$SqlCommand,
+		[int]$return_row_count = 100,
+		[int]$table_index = 0,
+		[int]$row_index = 0,
+		[int]$start_index = 0
+	)
+	$ResultsCSV = ""
+	$RowNumber = 0
+	foreach ($Row in $DataSet.Tables[$table_index].Rows){
+		if($RowNumber -ge $start_index -and $RowNumber -lt $start_index + 100){
+			if($Row[$row_index] -ne [System.DBNull]::Value){
+				if($ResultsCSV -eq ""){
+					$ResultsCSV = $Row[$row_index]
+				}
+				else{
+					$ResultsCSV = $ResultsCSV + "," + $Row[$row_index]
+				}
+			}			
+		}
+		$RowNumber ++
+	}
+	$REST_Results = $null
+	$REST_Results = (Get_Spotify_Audio_Features -user $user -token $token -track_ids $ResultsCSV)
+
+	foreach($TAF in $REST_Results.audio_features){
+		Write-Host "Writing Audo_Features for Track ID:"  -NoNewline 
+		Write-host $TAF.id -ForegroundColor Green
+		$SqlCommand.Parameters["@track_id"].Value = $TAF.id
+		$SqlCommand.Parameters["@duration_ms"].Value = $TAF.duration_ms
+		$SqlCommand.Parameters["@time_signature"].Value = $TAF.time_signature
+		$SqlCommand.Parameters["@danceability"].Value = $TAF.danceability
+		$SqlCommand.Parameters["@energy"].Value = $TAF.energy
+		$SqlCommand.Parameters["@key"].Value = $TAF.key
+		$SqlCommand.Parameters["@loudness"].Value = $TAF.loudness
+		$SqlCommand.Parameters["@mode"].Value = $TAF.mode
+		$SqlCommand.Parameters["@speechiness"].Value = $TAF.speechiness
+		$SqlCommand.Parameters["@acousticness"].Value = $TAF.acousticness
+		$SqlCommand.Parameters["@instrumentalness"].Value = $TAF.instrumentalness
+		$SqlCommand.Parameters["@liveness"].Value = $TAF.liveness
+		$SqlCommand.Parameters["@valence"].Value = $TAF.valence
+		$SqlCommand.Parameters["@tempo"].Value = $TAF.tempo
+		$SqlCommand.Parameters["@RUN_ID"].Value = $Run_ID.ToString()
+		$SqlCommand.Parameters["@Added_To_Table_Date_Time"].Value = (get-date).ToUniversalTime().ToString("MM/dd/yyyy dd:HH:mm:ss")
+	
+		if($SendToDatabase-eq $true){
+			$Computer_Result = $SqlCommand.ExecuteNonQuery();
+		}
+	}
+
+	if($start_index -lt ($DataSet.Tables[$table_index].Rows.Count - $return_row_count)){
+		Get_Next_X_From_Dataset $DataSet -start_index ($start_index + $return_row_count) -SqlCommand $SqlCommand
+	}
+	else{
+		$return_row_count = $DataSet.Tables[$table_index].Rows.Count - $start_index
+		write-host "Wrote audio features for" $DataSet.Tables[$table_index].Rows.Count "tracks to the database." -ForegroundColor Green
+	}
+}
+
+function Get_Track_Audio_Features{
+	$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
+	$SqlConnection.ConnectionString = "Server=localhost\SQLEXPRESS;Database=Spotify;Integrated Security=True"
+	$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
+	$SqlCmd.CommandText = "Get_Tracks"
 	$SqlCmd.Connection = $SqlConnection
 	$SqlAdapter = New-Object System.Data.SqlClient.SqlDataAdapter
 	$SqlAdapter.SelectCommand = $SqlCmd
@@ -229,22 +351,30 @@ function Get_Spotify_Users{
 	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
 	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
 	$SqlCommand.Connection = $SqlConnection
-	$SqlCommand.CommandText = "[dbo].[Add_Spotify_User]"
-	$SqlCommand.Parameters.AddwithValue("@Spotify_User_ID",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@DisplayName",'') | Out-Null
-			
-	foreach ($Row in  $DataSet.Tables[0].AddedBy_ID){
-		if($Row -ne ""){
-			$User = Get_Spotify_User_Profile $user $token $Row
-			$SqlCommand.Parameters["@Spotify_User_ID"].Value = $User.id
-			$SqlCommand.Parameters["@DisplayName"].Value = $User.display_name
-			$Computer_Result = $SqlCommand.ExecuteNonQuery();
-		}	
-	}
+	$SqlCommand.CommandText = "[dbo].[Add_Audio_Feature]"
+	$SqlCommand.Parameters.AddwithValue("@Track_id",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@duration_ms",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@time_signature",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@danceability",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@energy",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@key",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@loudness",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@mode",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@speechiness",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@acousticness",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@instrumentalness",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@liveness",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@valence",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@tempo",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@RUN_ID",1) | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@Added_To_Table_Date_Time",'') | Out-Null
+
+	Get_Next_X_From_Dataset -DataSet $DataSet -SQLCommand $SqlCommand
 }
 
 DumpAppTracks
 Get_Spotify_Users
 
-
-
+if($SendToDatabase-eq $true){
+	Get_Track_Audio_Features
+}
