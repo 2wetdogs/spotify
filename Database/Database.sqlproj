@@ -75,6 +75,12 @@
     <Build Include="StoredProcedures\Get_Tracks.sql" />
     <Build Include="StoredProcedures\Add_Audio_Feature.sql" />
     <Build Include="StoredProcedures\Get_Run_IDs.sql" />
+    <Build Include="Tables\Tracks.sql" />
+    <Build Include="Tables\Albums.sql" />
+    <Build Include="Tables\Artists.sql" />
+    <Build Include="StoredProcedures\Add_Update_Artist.sql" />
+    <Build Include="StoredProcedures\Add_Update_Album.sql" />
+    <Build Include="StoredProcedures\Add_Update_Track.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Create-LocalHost-SQLEXPRESS-Spotify-Database.publish.xml" />
