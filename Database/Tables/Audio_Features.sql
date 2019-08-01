@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[Audio_Features](
 	[Audio_Feature_ID] [int] IDENTITY(10000,1) NOT NULL,
 	[Track_id] [VARCHAR](MAX) NOT NULL,
-	[duration_ms] BIGINT NOT NULL,
+	[duration_ms] INT NOT NULL,
 	[time_signature] [INT] NOT NULL,
 	[danceability] DECIMAL(18, 10) NULL,
 	[energy] DECIMAL(18, 10) NULL,

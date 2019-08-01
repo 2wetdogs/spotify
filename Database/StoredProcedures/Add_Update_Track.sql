@@ -3,7 +3,7 @@
 	@Artist_id VARCHAR(50),
 	@Album_id VARCHAR(50),
 	@disc_number INT,
-	@duration_ms BIGINT,
+	@duration_ms INT,
 	@external_urls VARCHAR(MAX),
 	@href VARCHAR(MAX),
 	@is_local BIT,

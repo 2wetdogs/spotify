@@ -9,12 +9,139 @@ param(
     [string]$user,    
     [string]$token,
     [string]$fileName = "AllTracks.csv",
-	[bool]$SendToDatabase= $false,
+	[bool]$SendToDatabase = $false,
 	[string]$DatabaseConnectionString = "Server=localhost\SQLEXPRESS;Database=Spotify;Integrated Security=True"
 )
 
 #Create an unique id based on time for each instance of the script
 $Run_ID = (get-date).ToUniversalTime().ToString("yyyyMMddHHmmss")
+
+
+function Add_Update_Track{
+	param(
+		[System.Data.SqlClient.SqlConnection]$SqlConnection,
+		[string]$Track_id,
+		[string]$Artist_id,
+		[string]$Album_id,
+		[int]$disc_number,
+		[int]$duration_ms,
+		[string]$external_urls,
+		[string]$href,
+		[bool]$is_local,
+		[string]$name,
+		[int]$popularity,
+		[int]$track_number,
+		[string]$uri
+	)
+	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+	$SqlCommand.Connection = $SqlConnection
+	$SqlCommand.CommandText = "[dbo].[Add_Update_Track]"
+	$SqlCommand.Parameters.AddwithValue("@Track_id",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@Artist_id",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@Album_id",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@disc_number",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@duration_ms",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@external_urls",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@href",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@is_local",0) | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@name",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@popularity",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@track_number",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@uri",'') | Out-Null
+
+	$SqlCommand.Parameters["@Track_id"].Value = $Track_id
+	$SqlCommand.Parameters["@Artist_id"].Value = $Artist_id
+	$SqlCommand.Parameters["@Album_id"].Value = $Album_id
+	$SqlCommand.Parameters["@disc_number"].Value = $disc_number
+	$SqlCommand.Parameters["@duration_ms"].Value = $duration_ms
+	$SqlCommand.Parameters["@external_urls"].Value = $external_urls
+	$SqlCommand.Parameters["@href"].Value = $href
+	$SqlCommand.Parameters["@is_local"].Value = $is_local
+	$SqlCommand.Parameters["@name"].Value = $name
+	$SqlCommand.Parameters["@popularity"].Value = $popularity
+	$SqlCommand.Parameters["@track_number"].Value = $track_number
+	$SqlCommand.Parameters["@uri"].Value = $uri
+
+	if($SendToDatabase-eq $true){
+		$Computer_Result = $SqlCommand.ExecuteNonQuery();
+	}
+}
+
+
+function Add_Update_Album(){
+	param(
+		[System.Data.SqlClient.SqlConnection]$SqlConnection,
+		[string]$Album_id,
+		[string]$album_type,
+		[string]$Artist_id,
+		[string]$external_urls,
+		[string]$href,
+		[string]$name,
+		[string]$release_date,
+		[string]$total_tracks,
+		[string]$uri
+	)
+	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+	$SqlCommand.Connection = $SqlConnection
+	$SqlCommand.CommandText = "[dbo].[Add_Update_Album]"
+	$SqlCommand.Parameters.AddwithValue("@Album_id",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@album_type",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@Artist_id",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@external_urls",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@href",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@name",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@release_date",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@total_tracks",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@uri",'') | Out-Null
+
+	$SqlCommand.Parameters["@Album_id"].Value = $Album_id
+	$SqlCommand.Parameters["@album_type"].Value = $album_type
+	$SqlCommand.Parameters["@Artist_id"].Value = $Artist_id
+	$SqlCommand.Parameters["@external_urls"].Value = $external_urls
+	$SqlCommand.Parameters["@href"].Value = $href
+	$SqlCommand.Parameters["@name"].Value = $name
+	$SqlCommand.Parameters["@release_date"].Value = $release_date
+	$SqlCommand.Parameters["@total_tracks"].Value = $total_tracks
+	$SqlCommand.Parameters["@uri"].Value = $uri
+
+	if($SendToDatabase-eq $true){
+		$Computer_Result = $SqlCommand.ExecuteNonQuery();
+	}
+}
+
+function Add_Update_Artist(){
+	param(
+		[System.Data.SqlClient.SqlConnection]$SqlConnection,
+		[string]$Artist_id,
+		[string]$external_urls,
+		[string]$href,
+		[string]$name,
+		[string]$uri
+	)
+	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+	$SqlCommand.Connection = $SqlConnection
+	$SqlCommand.CommandText = "[dbo].[Add_Update_Artist]"
+	$SqlCommand.Parameters.AddwithValue("@Artist_id",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@external_urls",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@href",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@name",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@uri",'') | Out-Null
+
+	$SqlCommand.Parameters["@Artist_id"].Value = $Artist_id
+	$SqlCommand.Parameters["@external_urls"].Value = $external_urls
+	$SqlCommand.Parameters["@href"].Value = $href
+	$SqlCommand.Parameters["@name"].Value = $name
+	$SqlCommand.Parameters["@uri"].Value = $uri
+
+	if($SendToDatabase-eq $true){
+		$Computer_Result = $SqlCommand.ExecuteNonQuery();
+	}
+}
+
+
 
 #Recursive Function - Get List of play lists 50 at a time by default. (This is a spotify max limit at this time too), Recursion is used to loop trough x number of playlists if x is greater than 50 remaining. 
 function Get_Full_List_of_Spotify_PlayLists([array]$Spotify_Playlists,[string]$user,[string]$token,[int]$playListCount=0,[int]$offset = 0,[int]$limit = 50){
@@ -80,21 +207,14 @@ function Get_Full_List_of_Spotify_PlayList_Tracks([string]$playListId,[string]$t
 }
 
 function DumpAppTracks(){
+	param(
+		[System.Data.SqlClient.SqlConnection]$SqlConnection
+	)
     $Spotify_PlayList_List = @()
     $Spotify_PlayList_List =  Get_Full_List_of_Spotify_PlayLists $Spotify_PlayList_List $user $token
     $PlayListCount = 0
     $trackCount = 0
     "`"TrackNumber`",`"PlayListTrackNumber`",`"TrackName`",`"Track_id`",`"ArtistName`",`"PlayListName`",`"PlayListID`",`"AddedBy_ID`",`"TrackExternalURL`",`"TrackSpotifyAPI`",`"TrackAddedAt`"" | Out-File -Encoding Ascii .\$fileName
-
-
-
-	$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
-	$SqlConnection.ConnectionString = $DatabaseConnectionString
-	if($SendToDatabase-eq $true){
-		write-host "Opening SQL Connection..."
-		$SqlConnection.Open()
-		write-host "SQL Connection Open"
-	}
 
 	#Creating SQL Connections
 	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
@@ -122,6 +242,7 @@ function DumpAppTracks(){
 
 	#Loop through the playlists and add them the file or database.
     foreach ($PlayList in $Spotify_PlayList_List){
+
         Write-Host "Begin:" (Get-Date).ToString() -ForegroundColor Green
         $PlayListCount += 1
         Write-Host $PlayListCount ":" $PlayList.name ":" $PlayList.id
@@ -132,16 +253,56 @@ function DumpAppTracks(){
 	
 		#Looping through tracks in playlists.
         foreach ($track in $trackList){
-            $trackCount += 1
+			$trackCount += 1
             $playListTrackCount++
 			$SqlCommand.Parameters["@TrackNumber"].Value = $trackCount
 			$SqlCommand.Parameters["@PlaylistTrackNumber"].Value = $playListTrackCount
 			$SqlCommand.Parameters["@TrackName"].Value = $track.track.name
 			if($track.track.id -ne $null){
 				$SqlCommand.Parameters["@Track_id"].Value = $track.track.id
-			}
+			}	
 			if($track.track.artists.count -eq 1){
 				$SqlCommand.Parameters["@ArtistName"].Value = $track.track.artists.name.ToString()
+				$Artist_Params = @{
+					SqlConnection = $SqlConnection
+					Artist_id = $track.track.artists.id
+					extneral_urls = $track.track.artists.external_urls
+					href = $track.track.artists.href
+					name = $track.track.artists.name
+					uri = $track.track.artists.uri
+				}
+				Add_Update_Artist @Artist_Params
+
+				$Album_Params = @{
+					SqlConnection = $SqlConnection
+					Album_id = $track.track.album.id
+					album_type = $track.track.album.album_type
+					Artist_id = $track.track.artists.id
+					external_urls = $track.track.album.external_urls
+					href = $track.track.album.href
+					name = $track.track.album.name
+					release_date = $track.track.album.release_date
+					total_tracks = $track.track.album.total_tracks
+					uri = $track.track.album.uri
+				}
+				Add_Update_Album @Album_Params
+
+				$Track_Params = @{
+					SqlConnection = $SqlConnection
+					Track_id = $track.track.id
+					Artist_id = $track.track.artist.id
+					Album_id = $track.track.album.id
+					disc_number = $track.track.disc_number
+					duration_ms = $track.track.duration_ms
+					external_urls = $track.track.external_urls
+					href = $track.track.href
+					name = $track.track.name
+					popularity = $track.track.popularity
+					track_number = $track.track.track_number
+					uri = $track.track.uri
+				}
+				Add_Update_Track @Track_Params
+
 			}
 			else{
 				$Artists = ""
@@ -372,9 +533,28 @@ function Get_Track_Audio_Features{
 	Get_Next_X_From_Dataset -DataSet $DataSet -SQLCommand $SqlCommand
 }
 
-DumpAppTracks
-Get_Spotify_Users
 
+
+####################################################
+####                  MAIN						####
+####################################################
+
+#CONSTANTS
+if($SendToDatabase){
+	$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
+	$SqlConnection.ConnectionString = $DatabaseConnectionString
+	write-host "Opening SQL Connection..."
+	$SqlConnection.Open()
+	write-host "SQL Connection Open"
+}
+else{
+
+}
+
+
+
+DumpAppTracks -SqlConnection $SqlConnection
+Get_Spotify_Users
 if($SendToDatabase-eq $true){
 	Get_Track_Audio_Features
 }
