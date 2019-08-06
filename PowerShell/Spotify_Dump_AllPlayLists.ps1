@@ -68,7 +68,6 @@ function Add_Update_Track{
 	}
 }
 
-
 function Add_Update_Album(){
 	param(
 		[System.Data.SqlClient.SqlConnection]$SqlConnection,

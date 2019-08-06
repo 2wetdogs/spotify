@@ -91,4 +91,74 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="disc_number" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="ae73c4a6-c416-4351-87b2-17953545444a" ChangeDateTime="08/01/2019 15:29:49">
+    <Property Name="ElementName" Value="[dbo].[PlayLists_vnext].[Playlist_ID]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PlayLists_vnext]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Playlist_id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="0f8077e8-589d-492a-ac5e-e1dd4975220d" ChangeDateTime="08/01/2019 15:30:24">
+    <Property Name="ElementName" Value="[dbo].[PlayLists_vnext].[PlayList_Number]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PlayLists_vnext]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="collaborative" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9117b369-03ff-4daf-b64a-14560f40eeed" ChangeDateTime="08/01/2019 15:30:37">
+    <Property Name="ElementName" Value="[dbo].[PlayLists_vnext].[TrackNumber]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PlayLists_vnext]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="description" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="519a003a-d8bc-46f8-bf6f-fb1f76623592" ChangeDateTime="08/01/2019 15:31:12">
+    <Property Name="ElementName" Value="[dbo].[PlayLists_vnext].[PlaylistTrackNumber]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PlayLists_vnext]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="external_urls" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="a9c0ffcf-5ba7-4c7a-a689-7703d14d1b9d" ChangeDateTime="08/01/2019 15:41:03">
+    <Property Name="ElementName" Value="[dbo].[PlayLists_vnext].[TrackName]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PlayLists_vnext]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="href" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9e859c50-dbbe-4944-a1c7-07dd6ef35590" ChangeDateTime="08/01/2019 15:41:24">
+    <Property Name="ElementName" Value="[dbo].[PlayLists_vnext].[track_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PlayLists_vnext]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="name" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="6521245d-2b09-4228-a9b4-54ef3b292df0" ChangeDateTime="08/01/2019 15:41:36">
+    <Property Name="ElementName" Value="[dbo].[PlayLists_vnext].[ArtistName]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PlayLists_vnext]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="owner" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="72ee5f1c-a405-4ff7-b05d-0b69dcd8090d" ChangeDateTime="08/01/2019 15:41:54">
+    <Property Name="ElementName" Value="[dbo].[PlayLists_vnext].[owner]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PlayLists_vnext]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="owner_id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="07bda9b3-aa37-49bb-b1fc-e0f2534619c8" ChangeDateTime="08/04/2019 20:43:54">
+    <Property Name="ElementName" Value="[dbo].[PlayLists_vnext].[PlayListName]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PlayLists_vnext]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="public" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="adfb9a21-a1d2-4db7-96e0-36ddfcb2c2f1" ChangeDateTime="08/04/2019 21:07:40">
+    <Property Name="ElementName" Value="[dbo].[PlayList_Tracks].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[PlayList_Tracks]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PlayList_Track_ID" />
+  </Operation>
 </Operations>
