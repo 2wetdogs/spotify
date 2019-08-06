@@ -371,7 +371,7 @@ function Get_Spotify_User_Profile([string]$user,[string]$token,[string]$userid){
 
 function Get_Spotify_Users{
 	$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
-	$SqlConnection.ConnectionString = "Server=localhost\SQLEXPRESS;Database=Spotify;Integrated Security=True"
+	$SqlConnection.ConnectionString = $DatabaseConnectionString
 	$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
 	$SqlCmd.CommandText = "Get_Users_List"
 	$SqlCmd.Connection = $SqlConnection
@@ -491,7 +491,7 @@ function Get_Next_X_From_Dataset {
 
 function Get_Track_Audio_Features{
 	$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
-	$SqlConnection.ConnectionString = "Server=localhost\SQLEXPRESS;Database=Spotify;Integrated Security=True"
+	$SqlConnection.ConnectionString = $DatabaseConnectionString
 	$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
 	$SqlCmd.CommandText = "Get_Tracks"
 	$SqlCmd.Connection = $SqlConnection
