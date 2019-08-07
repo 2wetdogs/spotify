@@ -83,6 +83,8 @@
     <Build Include="StoredProcedures\Add_Update_Track.sql" />
     <Build Include="Tables\Playlists_vnext.sql" />
     <Build Include="Tables\PlayList_Tracks.sql" />
+    <Build Include="StoredProcedures\Add_Update_Playlist.sql" />
+    <Build Include="StoredProcedures\Add_Playlist_Track.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Create-LocalHost-SQLEXPRESS-Spotify-Database.publish.xml" />

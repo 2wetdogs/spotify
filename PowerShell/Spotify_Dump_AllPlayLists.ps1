@@ -140,7 +140,71 @@ function Add_Update_Artist(){
 	}
 }
 
+function Add_Playlist_Track(){
+	param(
+		[System.Data.SqlClient.SqlConnection]$SqlConnection,
+		[string]$PlayList_id,
+		[string]$track_id
+	)
+	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+	$SqlCommand.Connection = $SqlConnection
+	$SqlCommand.CommandText = "[dbo].[Add_Playlist_Track]"
+	$SqlCommand.Parameters.AddwithValue("@PlayList_id",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@track_id",'') | Out-Null
 
+	$SqlCommand.Parameters["@PlayList_id"].Value = $PlayList_id
+	$SqlCommand.Parameters["@track_id"].Value = $track_id
+
+	if($SendToDatabase-eq $true){
+		$Computer_Result = $SqlCommand.ExecuteNonQuery();
+	}
+}
+
+function Add_Update_Playlist(){
+	param(
+		[System.Data.SqlClient.SqlConnection]$SqlConnection,
+		[string]$Playlist_id,
+		[bool]$collaborative,
+		[string]$description,
+		[string]$external_urls,
+		[string]$href,
+		[string]$name,
+		[string]$uri,
+		[string]$owner_id,
+		[string]$public
+	)
+	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+	$SqlCommand.Connection = $SqlConnection
+	$SqlCommand.CommandText = "[dbo].[Add_Update_Playlist]"
+	$SqlCommand.Parameters.AddwithValue("@Playlist_id",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@collaborative",0) | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@description",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@external_urls",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@href",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@name",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@uri",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@owner_id",'') | Out-Null
+	$SqlCommand.Parameters.AddwithValue("@public",0) | Out-Null
+
+
+	$SqlCommand.Parameters["@Playlist_id"].Value = $Playlist_id
+	$SqlCommand.Parameters["@collaborative"].Value = 0
+	$SqlCommand.Parameters["@external_urls"].Value = $description
+	$SqlCommand.Parameters["@external_urls"].Value = $external_urls
+	$SqlCommand.Parameters["@href"].Value = $href
+	$SqlCommand.Parameters["@name"].Value = $name
+	$SqlCommand.Parameters["@uri"].Value = $uri
+	$SqlCommand.Parameters["@owner_id"].Value = $owner_id
+	$SqlCommand.Parameters["@public"].Value = 0
+
+
+
+	if($SendToDatabase-eq $true){
+		$Computer_Result = $SqlCommand.ExecuteNonQuery();
+	}
+}
 
 #Recursive Function - Get List of play lists 50 at a time by default. (This is a spotify max limit at this time too), Recursion is used to loop trough x number of playlists if x is greater than 50 remaining. 
 function Get_Full_List_of_Spotify_PlayLists([array]$Spotify_Playlists,[string]$user,[string]$token,[int]$playListCount=0,[int]$offset = 0,[int]$limit = 50){
@@ -249,6 +313,21 @@ function DumpAppTracks(){
         $trackList = @()
         $trackList =  Get_Full_List_of_Spotify_PlayList_Tracks $PlayList.id $token
         $playListTrackCount = 0
+
+		$Add_Update_PlayList_Params = @{
+			SqlConnection = $SqlConnection
+			Playlist_id = $PlayList.id
+			collaborative = 0
+			description = $PlayList.description
+			external_urls = $PlayList.external_urls.spotify
+			href = $PlayList.href
+			name = $PlayList.name
+			uri = $PlayList.uri
+			owner_id = $PlayList.owner.id
+			public = 0
+	}
+	Add_Update_PlayList @Add_Update_PlayList_Params
+
 	
 		#Looping through tracks in playlists.
         foreach ($track in $trackList){
@@ -302,6 +381,12 @@ function DumpAppTracks(){
 				}
 				Add_Update_Track @Track_Params
 
+				$PlayList_Track_Params = @{
+					SqlConnection = $SqlConnection
+					Track_id = $track.track.id
+					PlayList_id = $PlayList.id
+				}
+				Add_Playlist_Track @PlayList_Track_Params
 			}
 			else{
 				$Artists = ""
