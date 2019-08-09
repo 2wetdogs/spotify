@@ -1,4 +1,3 @@
-
 #user: Spotify UserName
 #token: Spotify authentication token
 #filename: The name of the file you want to dump the playlists to.
