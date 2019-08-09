@@ -8,7 +8,8 @@
 	@name VARCHAR(MAX),
 	@release_date VARCHAR(MAX),
 	@total_tracks INT,
-	@uri VARCHAR(MAX)
+	@uri VARCHAR(MAX),
+	@Run_ID VARCHAR(150)
 )
 AS
 
@@ -23,7 +24,8 @@ IF EXISTS (SELECT * FROM dbo.Albums WHERE Album_id = @Album_id)
 			name = @name,
 			release_date = @release_date,
 			total_tracks = @total_tracks,
-			uri = @uri
+			uri = @uri,
+			Run_ID = @Run_ID
             WHERE Album_id = @Album_id;
     END
 ELSE
@@ -37,7 +39,8 @@ ELSE
 		name,
 		release_date,
 		total_tracks,
-		uri) 
+		uri,
+		[RUN_ID]) 
             
 		VALUES
 		(@Album_id,
@@ -48,5 +51,6 @@ ELSE
 		@name,
 		@release_date,
 		@total_tracks,
-		@uri)
+		@uri,
+		@Run_ID)
     END

@@ -8,5 +8,6 @@
     [name] VARCHAR(MAX) NOT NULL, 
     [release_date] VARCHAR(MAX) NOT NULL, 
     [total_tracks] INT NOT NULL, 
-    [uri] VARCHAR(MAX) NOT NULL
+    [uri] VARCHAR(MAX) NOT NULL,
+	[RUN_ID] [VARCHAR](150) NULL
 )

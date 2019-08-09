@@ -4,5 +4,6 @@
     [external_urls] VARCHAR(MAX) NOT NULL, 
     [href] VARCHAR(MAX) NOT NULL, 
     [name] VARCHAR(MAX) NOT NULL, 
-    [uri] VARCHAR(MAX) NOT NULL
+    [uri] VARCHAR(MAX) NOT NULL,
+	[RUN_ID] [VARCHAR](150) NULL
 )

@@ -161,4 +161,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="PlayList_Track_ID" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="dcbdad45-96b2-45ae-8742-c64b7286a096" ChangeDateTime="08/08/2019 16:49:19">
+    <Property Name="ElementName" Value="[dbo].[Liked_Tracks].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Liked_Tracks]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="track_id" />
+  </Operation>
 </Operations>

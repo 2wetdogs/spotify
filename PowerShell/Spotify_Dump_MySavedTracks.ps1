@@ -1,6 +1,6 @@
 param(
     [string]$token,
-    [string]$fileName = "Sopotify-MySavedTracks.csv"
+    [string]$fileName = "Spotify-MySavedTracks.csv"
 )
 
 function Dump_MySpotifyTracks([string]$token,[int]$trackCount=0,[int]$trackNumber = 0,[int]$offset = 0,[int]$limit = 50){

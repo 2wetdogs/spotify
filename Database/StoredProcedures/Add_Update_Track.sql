@@ -10,7 +10,8 @@
 	@name VARCHAR(MAX),
 	@popularity INT,
 	@track_number INT,
-	@uri VARCHAR(MAX)
+	@uri VARCHAR(MAX),
+	@Run_ID VARCHAR(150)
 AS
 
 IF EXISTS (SELECT * FROM dbo.Tracks WHERE Track_id = @track_id)
@@ -27,7 +28,8 @@ IF EXISTS (SELECT * FROM dbo.Tracks WHERE Track_id = @track_id)
 			name = @name,
 			popularity = @popularity,
 			track_number = @track_number,
-			uri = @uri
+			uri = @uri,
+			Run_ID = @Run_ID
             WHERE Track_id = @Track_id;
     END
 ELSE
@@ -44,7 +46,8 @@ ELSE
 			[name],
 			[popularity],
 			[track_number],
-			[uri])
+			[uri],
+			[RUN_ID])
 		VALUES
 			(@Track_id,
 			@Artist_id,
@@ -57,6 +60,7 @@ ELSE
 			@name,
 			@popularity,
 			@track_number,
-			@uri);
+			@uri,
+			@Run_ID);
     END
 GO

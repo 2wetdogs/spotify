@@ -6,5 +6,6 @@
 	[href] [VARCHAR](MAX) NOT NULL,
 	[name] [VARCHAR](MAX) NOT NULL,
 	[owner_id] [VARCHAR](MAX) NOT NULL,
-	[public] BIT NOT NULL
+	[public] BIT NOT NULL,
+	[RUN_ID] [VARCHAR](150) NULL
 )

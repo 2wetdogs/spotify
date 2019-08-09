@@ -85,6 +85,7 @@
     <Build Include="Tables\PlayList_Tracks.sql" />
     <Build Include="StoredProcedures\Add_Update_Playlist.sql" />
     <Build Include="StoredProcedures\Add_Playlist_Track.sql" />
+    <Build Include="Tables\Liked_Tracks.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Create-LocalHost-SQLEXPRESS-Spotify-Database.publish.xml" />

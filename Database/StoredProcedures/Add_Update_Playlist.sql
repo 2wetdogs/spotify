@@ -8,7 +8,8 @@
 	@name VARCHAR(MAX),
 	@owner_id VARCHAR(50),
 	@public BIT,
-	@uri VARCHAR(MAX)
+	@uri VARCHAR(MAX),
+	@Run_ID VARCHAR(150)
 )
 AS
 
@@ -22,7 +23,8 @@ IF EXISTS (SELECT * FROM dbo.PlayLists_vnext WHERE Playlist_id = @Playlist_id)
 			href = @href,
 			name = @name,
 			owner_id = @owner_id,
-			[public] = @public
+			[public] = @public,
+			Run_ID = @Run_ID
             WHERE Playlist_id = @Playlist_id;
     END
 ELSE
@@ -35,7 +37,8 @@ ELSE
 		href,
 		name,
 		owner_id,
-		[public]) 
+		[public],
+		[RUN_ID]) 
             
 		VALUES
 		(@Playlist_id,
@@ -45,5 +48,6 @@ ELSE
 		@href,
 		@name,
 		@owner_id,
-		@public)
+		@public,
+		@Run_ID)
     END

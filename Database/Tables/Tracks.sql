@@ -11,5 +11,6 @@
     [name] VARCHAR(MAX) NOT NULL, 
     [popularity] INT NOT NULL, 
     [track_number] INT NOT NULL, 
-    [uri] VARCHAR(MAX) NOT NULL 
+    [uri] VARCHAR(MAX) NOT NULL,
+	[RUN_ID] [VARCHAR](150) NULL
   )
