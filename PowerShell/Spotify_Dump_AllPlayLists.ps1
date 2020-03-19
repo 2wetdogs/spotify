@@ -3,7 +3,6 @@
 #filename: The name of the file you want to dump the playlists to.
 #SendToDatabase: Tells the script to send a copy to a database as specificed in the DatabaseConnectionString parameter
 #DatabaseConnectionString: connection string to connect to the sql database.   Server=<servername\instance>;<Database=<databasename>;Integrated Secuirty=True
-
 param(
     [string]$user,    
     [string]$token,
@@ -33,44 +32,29 @@ function Add_Update_Track{
 		[string]$uri,
 		[string]$Run_ID
 	)
-	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
-	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
-	$SqlCommand.Connection = $SqlConnection
-	$SqlCommand.CommandText = "[dbo].[Add_Update_Track]"
-	$SqlCommand.Parameters.AddwithValue("@Track_id",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@Artist_id",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@Album_id",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@disc_number",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@duration_ms",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@external_urls",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@href",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@is_local",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@name",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@popularity",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@track_number",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@uri",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@RUN_ID",'') | Out-Null
-
-	$SqlCommand.Parameters["@Track_id"].Value = $Track_id
-	$SqlCommand.Parameters["@Artist_id"].Value = $Artist_id
-	$SqlCommand.Parameters["@Album_id"].Value = $Album_id
-	$SqlCommand.Parameters["@disc_number"].Value = $disc_number
-	$SqlCommand.Parameters["@duration_ms"].Value = $duration_ms
-	$SqlCommand.Parameters["@external_urls"].Value = $external_urls
-	$SqlCommand.Parameters["@href"].Value = $href
-	if ($is_local -eq $true){
-		$SqlCommand.Parameters["@is_local"].Value = 1
-		Write-Host "TRUE" -ForegroundColor Yellow
-	}else{
-		$SqlCommand.Parameters["@is_local"].Value = 0
-	}
-	$SqlCommand.Parameters["@name"].Value = $name
-	$SqlCommand.Parameters["@popularity"].Value = $popularity
-	$SqlCommand.Parameters["@track_number"].Value = $track_number
-	$SqlCommand.Parameters["@uri"].Value = $uri
-	$SqlCommand.Parameters["@RUN_ID"].Value = $Run_ID.ToString()
-
 	if($SendToDatabase-eq $true){
+		$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+		$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+		$SqlCommand.Connection = $SqlConnection
+		$SqlCommand.CommandText = "[dbo].[Add_Update_Track]"
+		$SqlCommand.Parameters.AddwithValue("@Track_id",$Track_id) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@Artist_id",$Artist_id) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@Album_id",$Album_id) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@disc_number",$disc_number) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@duration_ms",$duration_ms) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@external_urls",$external_urls) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@href",$href) | Out-Null
+		if ($is_local -eq $true){
+			$SqlCommand.Parameters.AddwithValue("@is_local",1) | Out-Null
+			#Write-Host "TRUE" -ForegroundColor Yellow
+		}else{
+			$SqlCommand.Parameters.AddwithValue("@is_local",0) | Out-Null
+		}
+		$SqlCommand.Parameters.AddwithValue("@name",$name) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@popularity",$popularity) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@track_number",$track_number) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@uri",$uri) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@RUN_ID",$Run_ID.ToString()) | Out-Null
 		$Computer_Result = $SqlCommand.ExecuteNonQuery();
 	}
 }
@@ -89,33 +73,22 @@ function Add_Update_Album(){
 		[string]$uri,
 		[string]$Run_ID
 	)
-	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
-	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
-	$SqlCommand.Connection = $SqlConnection
-	$SqlCommand.CommandText = "[dbo].[Add_Update_Album]"
-	$SqlCommand.Parameters.AddwithValue("@Album_id",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@album_type",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@Artist_id",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@external_urls",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@href",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@name",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@release_date",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@total_tracks",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@uri",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@RUN_ID",'') | Out-Null
-
-	$SqlCommand.Parameters["@Album_id"].Value = $Album_id
-	$SqlCommand.Parameters["@album_type"].Value = $album_type
-	$SqlCommand.Parameters["@Artist_id"].Value = $Artist_id
-	$SqlCommand.Parameters["@external_urls"].Value = $external_urls
-	$SqlCommand.Parameters["@href"].Value = $href
-	$SqlCommand.Parameters["@name"].Value = $name
-	$SqlCommand.Parameters["@release_date"].Value = $release_date
-	$SqlCommand.Parameters["@total_tracks"].Value = $total_tracks
-	$SqlCommand.Parameters["@uri"].Value = $uri
-	$SqlCommand.Parameters["@RUN_ID"].Value = $Run_ID.ToString()
 
 	if($SendToDatabase-eq $true){
+		$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+		$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+		$SqlCommand.Connection = $SqlConnection
+		$SqlCommand.CommandText = "[dbo].[Add_Update_Album]"
+		$SqlCommand.Parameters.AddwithValue("@Album_id",$Album_id) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@album_type",$album_type) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@Artist_id",$Artist_id) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@external_urls",$external_urls) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@href",$href) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@name",$name) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@release_date",$release_date) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@total_tracks",$total_tracks) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@uri",$uri) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@RUN_ID",$Run_ID.ToString()) | Out-Null
 		$Computer_Result = $SqlCommand.ExecuteNonQuery();
 	}
 }
@@ -130,25 +103,17 @@ function Add_Update_Artist(){
 		[string]$uri,
 		[string]$Run_ID
 	)
-	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
-	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
-	$SqlCommand.Connection = $SqlConnection
-	$SqlCommand.CommandText = "[dbo].[Add_Update_Artist]"
-	$SqlCommand.Parameters.AddwithValue("@Artist_id",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@external_urls",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@href",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@name",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@uri",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@RUN_ID",'') | Out-Null
-
-	$SqlCommand.Parameters["@Artist_id"].Value = $Artist_id
-	$SqlCommand.Parameters["@external_urls"].Value = $external_urls
-	$SqlCommand.Parameters["@href"].Value = $href
-	$SqlCommand.Parameters["@name"].Value = $name
-	$SqlCommand.Parameters["@uri"].Value = $uri
-	$SqlCommand.Parameters["@RUN_ID"].Value = $Run_ID.ToString()
-
 	if($SendToDatabase-eq $true){
+		$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+		$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+		$SqlCommand.Connection = $SqlConnection
+		$SqlCommand.CommandText = "[dbo].[Add_Update_Artist]"
+		$SqlCommand.Parameters.AddwithValue("@Artist_id",$Artist_id) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@external_urls",$external_urls) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@href",$href) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@name",$name) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@uri",$uri) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@RUN_ID",$Run_ID.ToString()) | Out-Null
 		$Computer_Result = $SqlCommand.ExecuteNonQuery();
 	}
 }
@@ -162,23 +127,16 @@ function Add_Playlist_Track(){
 		[string]$track_id,
 		[string]$Run_ID
 	)
-	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
-	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
-	$SqlCommand.Connection = $SqlConnection
-	$SqlCommand.CommandText = "[dbo].[Add_Playlist_Track]"
-	$SqlCommand.Parameters.AddwithValue("@PlayList_id",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@track_id",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@Added_at",'') | Out-Null
-	$SqlCommand.Parameters.AddWithValue("@Added_by_id",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@RUN_ID",'') | Out-Null
-
-	$SqlCommand.Parameters["@PlayList_id"].Value = $PlayList_id
-	$SqlCommand.Parameters["@track_id"].Value = $track_id
-	$SqlCommand.Parameters["@Added_At"].Value = $Added_at
-	$SqlCommand.Parameters["@Added_by_id"].Value = $Added_by_id
-	$SqlCommand.Parameters["@RUN_ID"].Value = $Run_ID.ToString()
-
 	if($SendToDatabase-eq $true){
+		$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+		$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+		$SqlCommand.Connection = $SqlConnection
+		$SqlCommand.CommandText = "[dbo].[Add_Playlist_Track]"
+		$SqlCommand.Parameters.AddwithValue("@PlayList_id",$PlayList_id) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@track_id",$track_id) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@Added_at",$Added_at) | Out-Null
+		$SqlCommand.Parameters.AddWithValue("@Added_by_id",$Added_by_id) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@RUN_ID",$Run_ID.ToString()) | Out-Null
 		$Computer_Result = $SqlCommand.ExecuteNonQuery();
 	}
 }
@@ -197,39 +155,55 @@ function Add_Update_Playlist(){
 		[string]$public,
 		[string]$Run_ID
 	)
-	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
-	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
-	$SqlCommand.Connection = $SqlConnection
-	$SqlCommand.CommandText = "[dbo].[Add_Update_Playlist]"
-	$SqlCommand.Parameters.AddwithValue("@Playlist_id",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@collaborative",0) | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@description",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@external_urls",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@href",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@name",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@uri",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@owner_id",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@public",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@RUN_ID",'') | Out-Null
-
-
-	$SqlCommand.Parameters["@Playlist_id"].Value = $Playlist_id
-	$SqlCommand.Parameters["@collaborative"].Value = 0
-	$SqlCommand.Parameters["@external_urls"].Value = $description
-	$SqlCommand.Parameters["@external_urls"].Value = $external_urls
-	$SqlCommand.Parameters["@href"].Value = $href
-	$SqlCommand.Parameters["@name"].Value = $name
-	$SqlCommand.Parameters["@uri"].Value = $uri
-	$SqlCommand.Parameters["@owner_id"].Value = $owner_id
-	$SqlCommand.Parameters["@public"].Value = 0
-	$SqlCommand.Parameters["@RUN_ID"].Value = $Run_ID.ToString()
-
 	if($SendToDatabase-eq $true){
+		$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
+		$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
+		$SqlCommand.Connection = $SqlConnection
+		$SqlCommand.CommandText = "[dbo].[Add_Update_Playlist]"
+		$SqlCommand.Parameters.AddwithValue("@Playlist_id",$Playlist_id) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@collaborative",$collaborative) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@description",$description) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@external_urls",$external_urls) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@href",$href) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@name",$name) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@uri",$uri) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@owner_id",$owner_id) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@public",$public) | Out-Null
+		$SqlCommand.Parameters.AddwithValue("@RUN_ID",$Run_ID.ToString()) | Out-Null
 		$Computer_Result = $SqlCommand.ExecuteNonQuery();
 	}
 }
 
-#Recursive Function - Get List of play lists 50 at a time by default. (This is a spotify max limit at this time too), Recursion is used to loop trough x number of playlists if x is greater than 50 remaining. 
+
+function Dump_MySpotifyTracks([string]$token,[int]$trackCount=0,[int]$trackNumber = 0,[int]$offset = 0,[int]$limit = 50){
+    $url = "https://api.spotify.com/v1/me/tracks?limit=$limit&offset=$offset"
+    write-host $url
+    $headers = @{"Authorization" = "Bearer " + $token}
+    Try{
+        $results = Invoke-RestMethod -Uri $url -Headers $headers
+    }
+    Catch{
+        write-host $_
+        Start-Process chrome.exe https://developer.spotify.com/console/get-current-user-saved-tracks/
+        exit
+    }
+    $trackCount = $results.total
+    foreach ($Track in $results.items){
+        $trackNumber += 1
+        "`"" + $trackNumber.ToString() + "`",`"" + $Track.track.name + "`",`"" + $Track.track.name + "`",`"" + $Track.track.external_urls.spotify + "`",`"" + $Track.track.href  + "`",`"" + $Track.added_at + "`""| Out-File -append .\$fileName
+    }
+
+    if (($offset + $limit) -lt $trackCount){
+        if(($trackCount - ($offset + $limit)) -lt 50){
+            $limit = ($trackCount - ($offset + $limit))
+        } 
+        $offset = $offset + 50
+        Dump_MySpotifyTracks $token $trackCount $trackNumber $offset $limit
+    }
+}
+
+#Recursive Function - Get List of play lists 50 at a time by default. (This is a spotify max limit at this time too), Recursion is used to loop trough x number of playlists if x is greater than 50 remaining.
+##TO DO#### Hypermedia is included in the REST respons that gives you the URL for the next page of results so you wouln't need keep my own offset.  Just recursivly call that hypermediat link until it's blank
 function Get_Full_List_of_Spotify_PlayLists([array]$Spotify_Playlists,[string]$user,[string]$token,[int]$playListCount=0,[int]$offset = 0,[int]$limit = 50){
     
 	#Spotify URI for get playlists.
@@ -270,7 +244,13 @@ function Get_Full_List_of_Spotify_PlayLists([array]$Spotify_Playlists,[string]$u
     }
 }
 
-function Get_Full_List_of_Spotify_PlayList_Tracks([string]$playListId,[string]$token,$trackList = @(),[int]$trackCount=0,[int]$offset = 0,[int]$limit = 100){
+function Get_Full_List_of_Spotify_PlayList_Tracks{
+	param(
+		[string]$playListId,
+		[string]$token,$trackList = @(),
+		[int]$trackCount=0,[int]$offset = 0,
+		[int]$limit = 100
+	)
     $url = "https://api.spotify.com/v1/playlists/$playListId/tracks?limit=$limit&offset=$offset"
     $headers = @{"Authorization" = "Bearer " + $token}
     $results = Invoke-RestMethod -Uri $url -Headers $headers
@@ -302,7 +282,7 @@ function DumpAppTracks(){
     $trackCount = 0
     "`"TrackNumber`",`"PlayListTrackNumber`",`"TrackName`",`"Track_id`",`"ArtistName`",`"PlayListName`",`"PlayListID`",`"AddedBy_ID`",`"TrackExternalURL`",`"TrackSpotifyAPI`",`"TrackAddedAt`"" | Out-File -Encoding Ascii .\$fileName
 
-	#Creating SQL Connections
+	#Creating SQL Command
 	$SqlCommand = New-Object System.Data.SqlClient.SqlCommand
 	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
 	$SqlCommand.Connection = $SqlConnection
@@ -326,7 +306,7 @@ function DumpAppTracks(){
 
     $PlayListCount = 0
 
-	#Loop through the playlists and add them the file or database.
+	#Loop through the playlists and log to the file or database.
     foreach ($PlayList in $Spotify_PlayList_List){
 
         Write-Host "Begin:" (Get-Date).ToString() -ForegroundColor Green
@@ -340,7 +320,7 @@ function DumpAppTracks(){
 		$Add_Update_PlayList_Params = @{
 			SqlConnection = $SqlConnection
 			Playlist_id = $PlayList.id
-			collaborative = 0
+			collaborative = $PlayList.collaborative
 			description = $PlayList.description
 			external_urls = $PlayList.external_urls.spotify
 			href = $PlayList.href
@@ -489,7 +469,7 @@ function Get_Spotify_Users{
 	$SqlConnection = New-Object System.Data.SqlClient.SqlConnection
 	$SqlConnection.ConnectionString = $DatabaseConnectionString
 	$SqlCmd = New-Object System.Data.SqlClient.SqlCommand
-	$SqlCmd.CommandText = "Get_Users_List"
+	$SqlCmd.CommandText = "[dbo].[Get_Users_List]"
 	$SqlCmd.Connection = $SqlConnection
 	$SqlAdapter = New-Object System.Data.SqlClient.SqlDataAdapter
 	$SqlAdapter.SelectCommand = $SqlCmd
@@ -511,14 +491,14 @@ function Get_Spotify_Users{
 	$SqlCommand.CommandType = [System.Data.CommandType]'StoredProcedure'
 	$SqlCommand.Connection = $SqlConnection
 	$SqlCommand.CommandText = "[dbo].[Add_Spotify_User]"
-	$SqlCommand.Parameters.AddwithValue("@Spotify_User_ID",'') | Out-Null
-	$SqlCommand.Parameters.AddwithValue("@DisplayName",'') | Out-Null
+
+
 			
 	foreach ($Row in  $DataSet.Tables[0].AddedBy_ID){
 		if($Row -ne ""){
 			$User = Get_Spotify_User_Profile $user $token $Row
-			$SqlCommand.Parameters["@Spotify_User_ID"].Value = $User.id
-			$SqlCommand.Parameters["@DisplayName"].Value = $User.display_name
+			$SqlCommand.Parameters.AddwithValue("@Spotify_User_ID",$User.ID) | Out-Null
+			$SqlCommand.Parameters.AddwithValue("@DisplayName",$User.display_name) | Out-Null			
 			if($SendToDatabase-eq $true){
 				$Computer_Result = $SqlCommand.ExecuteNonQuery();
 			}
@@ -664,7 +644,10 @@ if($SendToDatabase){
 
 
 DumpAppTracks -SqlConnection $SqlConnection
+Dump_MySpotifyTracks $token
 Get_Spotify_Users
 if($SendToDatabase-eq $true){
 	Get_Track_Audio_Features
 }
+	
+$SqlConnection.Close()
